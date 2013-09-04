@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map For ADXL345lib
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ThreeAxisF_t	KEYWORD1
+ThreeAxisI_t	KEYWORD1
+Accelerometer	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+setSensitivity	KEYWORD2
+readRaw	KEYWORD2
+readGs	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+OSEPP_ACC_SW_ON	LITERAL1
+OSEPP_ACC_SW_OFF	LITERAL1
