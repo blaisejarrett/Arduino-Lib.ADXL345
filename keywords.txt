@@ -6,8 +6,6 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-ThreeAxisF_t	KEYWORD1
-ThreeAxisI_t	KEYWORD1
 Accelerometer	KEYWORD1
 
 #######################################

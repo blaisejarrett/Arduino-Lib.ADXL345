@@ -18,6 +18,9 @@
 
 // Register Map
 #define ADXL345_REG_DEVID 0x00
+#define ADXL345_REG_OFSX 0x1E
+#define ADXL345_REG_OFSY 0x1F
+#define ADXL345_REG_OFSZ 0x20
 #define ADXL345_REG_BWRATE 0x2C
 #define ADXL345_REG_PWCTL 0x2D
 #define ADXL345_REG_INTEN 0x2E
@@ -35,25 +38,14 @@
 #define ADXL345_RANGE_PM16G 3
 
 
-struct ThreeAxisF_t {
-    double x;
-    double y;
-    double z;
-};
-
-struct ThreeAxisI_t {
-    int16_t x;
-    int16_t y;
-    int16_t z;
-};
-
 class Accelerometer {
     public:
         Accelerometer();
         int8_t begin(uint8_t i2cAddr);
         int8_t setSensitivity(uint8_t sensitivity);
-        ThreeAxisI_t readRaw();
-        ThreeAxisF_t readGs();
+        int8_t readRaw(int16_t * x, int16_t * y, int16_t * z);
+        int8_t readGs(double * x, double * y, double * z);
+        int8_t setOffsets(int8_t x, int8_t y, int8_t z);
     protected:
         int8_t i2cReadBytes(uint8_t reg, uint8_t * data, uint8_t len);
         int8_t i2cWriteByte(uint8_t reg, uint8_t data);

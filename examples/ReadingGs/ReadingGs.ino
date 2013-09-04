@@ -32,22 +32,25 @@ void loop()
     if (fail)
         return;
 
-    // a struct of 3 doubles: x, y, z
-    ThreeAxisF_t xyz;
+    // 3 doubles to store the data
+    double x, y, z;
 
     // Read Gs
     // Note: You can also read the raw data by calling
-    //       readRaw() - This will return a ThreeAxisI_t
-    //                   a struct of 3 int16s: x, y, z
-    xyz = acc.readGs();
+    //       readRaw() - readRaw takes int16_t instead of doubles
+    if (acc.readGs(&x, &y, &z) != 0)
+    {
+        Serial.println("Failed to read accelerometer");
+        return;
+    }
     
     // print them out
     Serial.print("X: ");
-    Serial.print(xyz.x);
+    Serial.print(x);
     Serial.print(" Y: ");
-    Serial.print(xyz.y);
+    Serial.print(y);
     Serial.print(" Z: ");
-    Serial.println(xyz.z);
+    Serial.println(z);
 
     delay(50);
 }

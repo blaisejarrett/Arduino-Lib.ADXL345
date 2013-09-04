@@ -43,9 +43,15 @@ int8_t Accelerometer::begin(uint8_t i2cAddr)
     return 0;
 }
 
-ThreeAxisF_t Accelerometer::readGs()
+int8_t Accelerometer::readGs(double * x, double * y, double * z)
 {
-    ThreeAxisI_t xyz_data = readRaw();
+    int16_t r_x, r_y, r_z;
+    int8_t raw_error;
+
+    raw_error = readRaw(&r_x, &r_y, &r_z);
+    // pass the error from readRaw if it failed
+    if (raw_error != 0)
+        return raw_error;
 
     // perform the float conversion
     int divisor;
@@ -71,34 +77,28 @@ ThreeAxisF_t Accelerometer::readGs()
             break;
     }
 
-    ThreeAxisF_t xyz_data_f;
+    *x = (double)r_x / divisor;
+    *y = (double)r_y / divisor;
+    *z = (double)r_z / divisor;
 
-    xyz_data_f.x = (double)xyz_data.x / divisor;
-    xyz_data_f.y = (double)xyz_data.y / divisor;
-    xyz_data_f.z = (double)xyz_data.z / divisor;
-
-    return xyz_data_f;
+    return 0;
 }
 
-ThreeAxisI_t Accelerometer::readRaw()
+int8_t Accelerometer::readRaw(int16_t * x, int16_t * y, int16_t * z)
 {
-    ThreeAxisI_t xyz_data = {
-        0,0,0
-    };
-
     if (i2cAddr_ == 0)
-        return xyz_data;
+        return AD_ACC_ERROR_NOT_INITIALIZED;
 
     uint8_t data[6];
 
     if (i2cReadBytes(ADXL345_REG_DATAX0, data, 6) != 0)
-        return xyz_data;
+        return AD_ACC_ERROR_I2CREAD;
 
-    conv2Byte2Signed16(data[0], data[1], &xyz_data.x);
-    conv2Byte2Signed16(data[2], data[3], &xyz_data.y);
-    conv2Byte2Signed16(data[4], data[5], &xyz_data.z);
+    conv2Byte2Signed16(data[0], data[1], x);
+    conv2Byte2Signed16(data[2], data[3], y);
+    conv2Byte2Signed16(data[4], data[5], z);
 
-    return xyz_data;
+    return 0;
 }
 
 void Accelerometer::conv2Byte2Signed16(uint8_t LSB, uint8_t MSB, int16_t * dest)
@@ -108,6 +108,23 @@ void Accelerometer::conv2Byte2Signed16(uint8_t LSB, uint8_t MSB, int16_t * dest)
     *dest = (int16_t)LSB;
 
     *dest |= ((int16_t)MSB << 8);
+}
+
+int8_t Accelerometer::setOffsets(int8_t x, int8_t y, int8_t z)
+{
+    int8_t writeByteError;
+
+    writeByteError = i2cWriteByte(ADXL345_REG_OFSX, x);
+    if (writeByteError != 0)
+        return writeByteError;
+
+    writeByteError = i2cWriteByte(ADXL345_REG_OFSY, y);
+    if (writeByteError != 0)
+        return writeByteError;
+
+    writeByteError = i2cWriteByte(ADXL345_REG_OFSZ, z);
+    if (writeByteError != 0)
+        return writeByteError;
 }
 
 int8_t Accelerometer::i2cReadBytes(uint8_t reg, uint8_t *data, uint8_t len)
