@@ -20,6 +20,9 @@ int8_t Accelerometer::begin(uint8_t i2cAddr)
     uint8_t devId;
     i2cAddr_ = i2cAddr;
 
+    // Join the I2C bus as master
+    WIRE.begin();
+
     if (i2cAddr_ == 0)
         return AD_ACC_ERROR_NOT_INITIALIZED;
 
