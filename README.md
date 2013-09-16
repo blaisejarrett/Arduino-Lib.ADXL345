@@ -8,3 +8,6 @@ It will work with any ADXL345 device over I2C, but does not support interrupts.
 *  Reading floating point three axis data in Gs
 *  Sensitivity Adjustments
 *  Calibration
+
+## Documentation
+* [Generated docs here](http://blaisejarrett.github.com/Arduino-Lib.ADXL345)
